@@ -1,0 +1,3 @@
+admin -> password (database account)
+cameron -> password (made in site maintenance for drupal)
+cameron_moderator -> password
