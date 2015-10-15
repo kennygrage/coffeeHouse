@@ -1,56 +1,52 @@
 <?php
 
-//I have a white screen
-
-
-
 //handles inputs
 
-// function greeting_menu() {              //this function name is the same as the name of module + the hook, "_menu"
-//     $items = array();
-//     $items['hello_friend'] = array(     //the trailing part of the url used to access the module
-//         'title' => "Hello World!",      //Title that appears on the page and the link in the nav bar
-//         'page callback' => 'say_hello', //stores the name of the function to run when browser goes to the url
-//         'access callback' => TRUE,      //TRUE means that any user has permission to access this url
-//         'type' => MENU_CALLBACK,
-//             //MENU_CALLBACK             - A hidden, internal callback, typically used for API calls.
-//             //MENU_DEFAULT_LOCAL_TASK   - The "default" local task, which is initially active.
-//             //MENU_LOCAL_ACTION         - An action specific to the parent, usually rendered as a link.
-//             //MENU_LOCAL_TASK           - A task specific to the parent item, usually rendered as a tab.
-//             //MENU_NORMAL_ITEM          - A "normal" menu item that's shown in menu and breadcrumbs.
-//             //MENU_SUGGESTED_ITEM       - A "normal" menu item, hidden kuntil enabled by an admin.
-//     );
-//     $items['goodbye_friend'] = array(
-//         'title' => "Goodbye Friend!",
-//         'page callback' => 'say_goodbye',
-//         'access callback' => TRUE,
-//         'type' => MENU_CALLBACK,
-//     );
-//     return $items;
-// }
-//
-//
-//
-//
-//
-// //handles outputs
-//
-// function say_hello() {
-//     return '<p>Hello my dear friend</p>';
-// }
-//
-// function say_goodbye() {
-//     return '<p>Goodbye my dear friend!</p>';
-// }
-//
-//
-// //redirects
-// function greeting_user_login() {
-//     $_GET['destination'] = 'hello_friend'; //when the user logs in, send them to the hello_friend page instead of the default home page.
-// }
-//
-// function greeting_user_logout {
-//     $_GET['destination'] = 'goodbye_friend';
-// }
+function greeting_menu() {              //this function name is the same as the name of module + the hook, "_menu"
+    $items = array();
+    $items['hello_friend'] = array(     //the trailing part of the url used to access the module
+        'title' => "Welcome!",          //Title that appears on the page and the link in the nav bar
+        'page callback' => 'say_hello', //stores the name of the function to run when browser goes to the url
+        'access callback' => TRUE,      //TRUE means that any user has permission to access this url
+        'type' => MENU_CALLBACK,
+            //MENU_CALLBACK             - A hidden, internal callback, typically used for API calls.
+            //MENU_DEFAULT_LOCAL_TASK   - The "default" local task, which is initially active.
+            //MENU_LOCAL_ACTION         - An action specific to the parent, usually rendered as a link.
+            //MENU_LOCAL_TASK           - A task specific to the parent item, usually rendered as a tab.
+            //MENU_NORMAL_ITEM          - A "normal" menu item that's shown in menu and breadcrumbs.
+            //MENU_SUGGESTED_ITEM       - A "normal" menu item, hidden kuntil enabled by an admin.
+    );
+    $items['goodbye_friend'] = array(
+        'title' => "Logout Successful!",
+        'page callback' => 'say_goodbye',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+
+
+
+
+//handles outputs
+
+function say_hello() {
+    return '<p>Hello my dear friend</p>';
+}
+
+function say_goodbye() {
+    return '<p>Goodbye my dear friend!</p>';
+}
+
+
+//redirects
+function greeting_user_login() {
+    $_GET['destination'] = 'hello_friend'; //when the user logs in, send them to the hello_friend page instead of the default home page.
+}
+
+function greeting_user_logout() {
+    $_GET['destination'] = 'goodbye_friend';
+}
 
 //standard to not have the closing php tag
