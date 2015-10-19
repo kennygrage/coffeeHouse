@@ -1,0 +1,5 @@
+name = Favorite Coffee
+description = Lists three favorite coffees.
+package = My First Modules
+core = 7.x
+files[] = favorite_coffee.module

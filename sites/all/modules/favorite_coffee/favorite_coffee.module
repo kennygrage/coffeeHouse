@@ -1,0 +1,22 @@
+<?php
+
+function favorite_coffee_menu() {
+    $items = array();
+    $items['favorite_coffee'] = array(
+            'title' => "Cameron's Favorite Coffees",
+            'page callback' => 'favorite_coffee_display',
+            'access callback' => TRUE,
+            'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+function favorite_coffee_display() {
+    return '
+        <ul>
+            <li>Strong Coffee</li>
+            <li>Stronger Coffee</li>
+            <li>Strongest Coffee</li>
+        </ul>
+    ';
+}
