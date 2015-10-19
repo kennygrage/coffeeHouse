@@ -1,0 +1,5 @@
+name = Coffee Pack
+description = List's out Cameron's recommended items to buy at his shop.
+package = My First Modules
+core = 7.x
+files[] = coffee_pack.module

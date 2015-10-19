@@ -1,0 +1,41 @@
+<?php
+
+function coffee_pack_menu() {
+    $items = array();
+    $items['coffee_pack'] = array(
+            'title' => "Cameron's Coffee Pack",
+            'page callback' => 'coffee_pack_display',
+            'access callback' => TRUE,
+            'type' => MENU_NORMAL_ITEM,
+        );
+    return $items;
+} //end coffee_pack_menu()
+
+
+function coffee_pack_display() {
+    $pack_items = get_pack_items();
+    $total = 0;
+    $return_string = "<ul>";
+    foreach ($pack_items as $item => $value) {
+        $string_of_value = "$";
+        $string_of_value .= number_format($value, 2);
+        $return_string .= "<li>$item - $string_of_value</li>";
+        $total += $value;
+    }
+    $string_of_total = "$";
+    $string_of_total .= number_format($total, 2);
+    $return_string .= "</ul>Total for Cameron's Coffee Pack is $string_of_total";
+    return $return_string;
+} //end coffe_pack_display()
+
+
+function get_pack_items() {
+    $pack_items = array(
+            'Strong Coffee, 1 lb.' => 16.99,
+            'Cheese Bagel'         => 3.50,
+            'Chocolate'            => 2.99,
+            'Pumpkin Bread'        => 1.99,
+            'Donut'                => 0.99,
+        );
+    return $pack_items;
+} //end get_pack_items()
