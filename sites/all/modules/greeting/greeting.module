@@ -28,12 +28,12 @@ function greeting_menu() {              //this function name is the same as the 
             'access callback' => TRUE,
             'type' => MENU_CALLBACK,
         );
-    $items['greeting_delete_user'] = array(
-            'title' => "User Account Deleted",
-            'page callback' => 'greeting_delete_user_page',
-            'access callback' => TRUE,
-            'type' => MENU_CALLBACK,
-        );
+    // $items['greeting_delete_user'] = array(
+    //         'title' => "User Account Deleted",
+    //         'page callback' => 'greeting_delete_user_page',
+    //         'access callback' => TRUE,
+    //         'type' => MENU_CALLBACK,
+    //     );
     return $items;
 }
 
@@ -55,9 +55,9 @@ function greeting_new_user_page() {
     return '<p>User account is created</p>';
 }
 
-function greeting_delete_user_page() {
-    return '<p>User is deleted</p>';
-}
+// function greeting_delete_user_page() {
+//     return '<p>User is deleted</p>';
+// }
 
 
 //redirects
@@ -73,9 +73,9 @@ function greeting_user_insert() {
     $_GET['destination'] = 'greeting_new_user';
 }
 
-function greeting_user_delete() {
-    $_GET['destination'] = 'greeting_delete_user';
-}
+// function greeting_user_cancel() {
+//     $_GET['destination'] = 'greeting_delete_user';
+// }
 
 
 //standard to not have the closing php tag
