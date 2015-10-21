@@ -1,0 +1,166 @@
+<?php
+
+function clock_angle_menu() {
+    $items = array();
+    $items['clock_angle'] = array(
+            'title' => 'Clock Angle Calculator',
+            'page callback' => 'drupal_get_form',
+            'page arguments' => array(clock_angle_form),
+            'access callback' => TRUE,
+            'type' => MENU_NORMAL_ITEM,
+        );
+    $items['clock_angle_success_page'] = array(
+            'title' => 'Success',
+            'page callback' => 'clock_angle_success',
+            'access callback' => TRUE,
+            'type' => MENU_CALLBACK,
+        );
+    // $tiems['clock_angle_fail_page'] = array(
+    //         'title' => 'Try Again',
+    //         'page callback' => 'drupal_get_form',
+    //         'page arguments' => array(clock_angle_fail),
+    //         'access callback' => TRUE,
+    //         'type' => MENU_CALLBACK,
+    //     );
+    return $items;
+} //end clock_angle_menu()
+
+
+function clock_angle_form() {
+    $form['time'] = array(
+            '#title' => 'Time',
+            '#type' => 'textfield',
+            '#description' => t('Please enter the time (format: hh:mm) to calculate the clock angle.'),
+        );
+    $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' => 'Calculate',
+        );
+
+    return $form;
+} //end clock_angle_form()
+
+
+function clock_angle_form_submit($form, &$form_state) {
+    $time = $form_state['values']['time'];
+    $pattern = "/\d{1,2}:\d{2}}/";
+    $correct_format = preg_match($pattern, $time);
+    if ($correct_format) {
+        $_SESSION['angle'] = angle_calculator($time);
+        //$form_state['redirect'] = 'clock_angle_success_page';
+    }
+    else { //User didn't enter a time in the correct format
+        drupal_set_message("not correct");
+        //$form_state['redirect'] = 'ping_pong_fail_page';
+    }
+} //end clock_angle_form_submit()
+
+
+function clock_angle_success() {
+
+} //end clock_angle_success()
+
+
+function clock_angle_fail() {
+
+} //end clock_angle_fail()
+
+
+function angle_calculator($time) {
+    $time_elements = preg_split('/:/', $time);
+    drupal_set_message($time_elements[0]);
+    drupal_set_message($time_elements[1]);
+    return 1;
+} //end engle_calculator
+
+
+
+
+// function ping_pong_success() {
+//     $output = '<ul>';
+//     foreach ($_SESSION['ping_pong_output'] as $value) {
+//         $output .= '<li>' . $value . '</li>';
+//     }
+//
+//     $output .= '</ul>';
+//
+//     return $output;
+// } //end ping_pong_success()
+//
+//
+// function ping_pong_fail() {
+//     drupal_set_message('Please enter an integer greater than or equal to 1');
+//     $form['count_goal'] = array(
+//             '#title' => 'Count Goal',
+//             '#type' => 'textfield',
+//             '#description' => t('Please enter the number you want to count up to.'),
+//         );
+//     $form['count_down'] = array(
+//             '#title' => 'Count Down (Check if you want to count down instead of count up)',
+//             '#type' => 'checkbox',
+//         );
+//
+//     $form['submit'] = array(
+//             '#type' => 'submit',
+//             '#value' =>  'Go',
+//         );
+//
+//     return $form;
+// } //end ping_pong_fail
+//
+//
+//
+//
+//
+// function ping_pong_fail_submit($form, &$form_state) {
+//     $count_max = $form_state['values']['count_goal'];
+//     $check_box = $form_state['values']['count_down'];
+//     $count_max = intval($count_max);
+//     if ($count_max >= 1) {
+//         $pingpong_output = page_submit_output($count_max, $check_box);
+//         $_SESSION['ping_pong_output'] = $pingpong_output;
+//         $form_state['redirect'] = 'ping_pong_success_page';
+//     }
+//     else { //User didn't enter a number greater than or equal to 1
+//         $form_state['redirect'] = 'ping_pong_fail_page';
+//     }
+// } //end ping_pong_fail_submit()
+//
+//
+// function page_submit_output($count_max, $check_box) {
+//     $pingpong_output = array();
+//
+//     if ($check_box) { //Count Down
+//         for ($i = $count_max; $i >= 1; $i--) {
+//             if ($i % 3 == 0 && $i % 5 == 0) {
+//                 array_push($pingpong_output, "ping-pong");
+//             }
+//             elseif ($i % 3 == 0) {
+//                 array_push($pingpong_output, "ping");
+//             }
+//             elseif ($i % 5 == 0) {
+//                 array_push($pingpong_output, "pong");
+//             }
+//             else {
+//                 array_push($pingpong_output, $i);
+//             }
+//         }
+//     }
+//     else { //Count Up
+//         for ($i = 1; $i <= $count_max; $i++) {
+//             if ($i % 3 == 0 && $i % 5 == 0) {
+//                 array_push($pingpong_output, "ping-pong");
+//             }
+//             elseif ($i % 3 == 0) {
+//                 array_push($pingpong_output, "ping");
+//             }
+//             elseif ($i % 5 == 0) {
+//                 array_push($pingpong_output, "pong");
+//             }
+//             else {
+//                 array_push($pingpong_output, $i);
+//             }
+//         }
+//     }
+//     return $pingpong_output;
+// } //end page_submit_output()

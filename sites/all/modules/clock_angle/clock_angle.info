@@ -1,0 +1,5 @@
+name = Clock Angle
+description = Displays the angle of an analog clock using a time given from the user as input.
+package = My First Modules
+core = 7.x
+files[] = clock_angle.module
