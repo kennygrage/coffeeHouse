@@ -15,13 +15,7 @@ function clock_angle_menu() {
             'access callback' => TRUE,
             'type' => MENU_CALLBACK,
         );
-    // $tiems['clock_angle_fail_page'] = array(
-    //         'title' => 'Try Again',
-    //         'page callback' => 'drupal_get_form',
-    //         'page arguments' => array(clock_angle_fail),
-    //         'access callback' => TRUE,
-    //         'type' => MENU_CALLBACK,
-    //     );
+
     return $items;
 } //end clock_angle_menu()
 
@@ -43,124 +37,44 @@ function clock_angle_form() {
 
 function clock_angle_form_submit($form, &$form_state) {
     $time = $form_state['values']['time'];
-    $pattern = "/\d{1,2}:\d{2}}/";
+    $pattern = "/^[0-2]?\d:[0-5]\d$/";
     $correct_format = preg_match($pattern, $time);
+    $time_elements = preg_split('/:/', $time);
+    if ($correct_format == 1) { //only do this check if we have numbers, a colon, and numbers
+        if (($time_elements[0] >= 24) || ($time_elements[1] >= 60)) { //still not a valid time
+            $correct_format = 0;
+        }
+    }
+
     if ($correct_format) {
-        $_SESSION['angle'] = angle_calculator($time);
-        //$form_state['redirect'] = 'clock_angle_success_page';
+        $_SESSION['angle'] = angle_calculator($time_elements[0], $time_elements[1]);
+        $_SESSION['time'] = $time;
+        $form_state['redirect'] = 'clock_angle_success_page';
     }
     else { //User didn't enter a time in the correct format
-        drupal_set_message("not correct");
-        //$form_state['redirect'] = 'ping_pong_fail_page';
+        drupal_set_message("Incorrect time, please enter a valid time in the format hh:mm");
     }
 } //end clock_angle_form_submit()
 
 
 function clock_angle_success() {
-
+    $time = $_SESSION['time'];
+    $angle = $_SESSION['angle'];
+    return "The angle of the time $time is $angle degrees.";
 } //end clock_angle_success()
 
 
-function clock_angle_fail() {
+function angle_calculator($hour, $minute) {
+    $hour_additional = $minute / 60;    //hourhand is exactly on the hour only when $minute == 0
+    $hour += $hour_additional;
+    if ($hour > 12) {$hour -= 12;}      //convert military time to standard time
+    if ($hour == 0) {$hour = 12;}       //hour 0 in military time is 12 in the morning
+    $hour *= 5;                         //put hour on the minutes plane
 
-} //end clock_angle_fail()
-
-
-function angle_calculator($time) {
-    $time_elements = preg_split('/:/', $time);
-    drupal_set_message($time_elements[0]);
-    drupal_set_message($time_elements[1]);
-    return 1;
-} //end engle_calculator
-
-
-
-
-// function ping_pong_success() {
-//     $output = '<ul>';
-//     foreach ($_SESSION['ping_pong_output'] as $value) {
-//         $output .= '<li>' . $value . '</li>';
-//     }
-//
-//     $output .= '</ul>';
-//
-//     return $output;
-// } //end ping_pong_success()
-//
-//
-// function ping_pong_fail() {
-//     drupal_set_message('Please enter an integer greater than or equal to 1');
-//     $form['count_goal'] = array(
-//             '#title' => 'Count Goal',
-//             '#type' => 'textfield',
-//             '#description' => t('Please enter the number you want to count up to.'),
-//         );
-//     $form['count_down'] = array(
-//             '#title' => 'Count Down (Check if you want to count down instead of count up)',
-//             '#type' => 'checkbox',
-//         );
-//
-//     $form['submit'] = array(
-//             '#type' => 'submit',
-//             '#value' =>  'Go',
-//         );
-//
-//     return $form;
-// } //end ping_pong_fail
-//
-//
-//
-//
-//
-// function ping_pong_fail_submit($form, &$form_state) {
-//     $count_max = $form_state['values']['count_goal'];
-//     $check_box = $form_state['values']['count_down'];
-//     $count_max = intval($count_max);
-//     if ($count_max >= 1) {
-//         $pingpong_output = page_submit_output($count_max, $check_box);
-//         $_SESSION['ping_pong_output'] = $pingpong_output;
-//         $form_state['redirect'] = 'ping_pong_success_page';
-//     }
-//     else { //User didn't enter a number greater than or equal to 1
-//         $form_state['redirect'] = 'ping_pong_fail_page';
-//     }
-// } //end ping_pong_fail_submit()
-//
-//
-// function page_submit_output($count_max, $check_box) {
-//     $pingpong_output = array();
-//
-//     if ($check_box) { //Count Down
-//         for ($i = $count_max; $i >= 1; $i--) {
-//             if ($i % 3 == 0 && $i % 5 == 0) {
-//                 array_push($pingpong_output, "ping-pong");
-//             }
-//             elseif ($i % 3 == 0) {
-//                 array_push($pingpong_output, "ping");
-//             }
-//             elseif ($i % 5 == 0) {
-//                 array_push($pingpong_output, "pong");
-//             }
-//             else {
-//                 array_push($pingpong_output, $i);
-//             }
-//         }
-//     }
-//     else { //Count Up
-//         for ($i = 1; $i <= $count_max; $i++) {
-//             if ($i % 3 == 0 && $i % 5 == 0) {
-//                 array_push($pingpong_output, "ping-pong");
-//             }
-//             elseif ($i % 3 == 0) {
-//                 array_push($pingpong_output, "ping");
-//             }
-//             elseif ($i % 5 == 0) {
-//                 array_push($pingpong_output, "pong");
-//             }
-//             else {
-//                 array_push($pingpong_output, $i);
-//             }
-//         }
-//     }
-//     return $pingpong_output;
-// } //end page_submit_output()
+    $angle = $hour - $minute;
+    if ($angle < 0) {$angle *= -1;}
+    $angle *= 6;                        //for every minute difference the hour and minute hands are, there is a 6 degree difference (360 degree circle / 60 minutes in that circle)
+    if ($angle == 360) {$angle = 0;}
+    elseif ($angle > 180) {$angle -= 180;} // we are looking for the smallest angle
+    return $angle;
+} //end angle_calculator()
