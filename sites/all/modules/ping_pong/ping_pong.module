@@ -15,6 +15,13 @@ function ping_pong_menu() {
             'access callback' => TRUE,
             'type' => MENU_CALLBACK,
         );
+    $items['ping_pong_fail_page'] = array(
+            'title' => 'Try Again',
+            'page callback' => 'drupal_get_form',
+            'page arguments' => array('ping_pong_fail'),
+            'access callback' => TRUE,
+            'type' => MENU_CALLBACK,
+        );
     return $items;
 } //end ping_pong_menu()
 
@@ -25,6 +32,10 @@ function ping_pong_form() {
             '#type' => 'textfield',
             '#description' => t('Please enter the number you want to count up to.'),
         );
+    $form['count_down'] = array(
+            '#title' => 'Count Down (Check if you want to count down instead of count up)',
+            '#type' => 'checkbox',
+        );
 
     $form['submit'] = array(
             '#type' => 'submit',
@@ -33,30 +44,6 @@ function ping_pong_form() {
 
     return $form;
 } //end ping_pong_form()
-
-
-function ping_pong_form_submit($form, &$form_state) {
-    $count_max = $form_state['values']['count_goal'];
-    $pingpong_output = array();
-
-    for ($i = 1; $i <= $count_max; $i++) {
-        if ($i % 3 == 0 && $i % 5 == 0) {
-            array_push($pingpong_output, "ping-pong");
-        }
-        elseif ($i % 3 == 0) {
-            array_push($pingpong_output, "ping");
-        }
-        elseif ($i % 5 == 0) {
-            array_push($pingpong_output, "pong");
-        }
-        else {
-            array_push($pingpong_output, $i);
-        }
-    }
-
-    $_SESSION['ping_pong_output'] = $pingpong_output;
-    $form_state['redirect'] = 'ping_pong_success_page';
-} //end ping_pong_form_submit()
 
 
 function ping_pong_success() {
@@ -69,3 +56,94 @@ function ping_pong_success() {
 
     return $output;
 } //end ping_pong_success()
+
+
+function ping_pong_fail() {
+    drupal_set_message('Please enter an integer greater than or equal to 1');
+    $form['count_goal'] = array(
+            '#title' => 'Count Goal',
+            '#type' => 'textfield',
+            '#description' => t('Please enter the number you want to count up to.'),
+        );
+    $form['count_down'] = array(
+            '#title' => 'Count Down (Check if you want to count down instead of count up)',
+            '#type' => 'checkbox',
+        );
+
+    $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' =>  'Go',
+        );
+
+    return $form;
+} //end ping_pong_fail
+
+
+function ping_pong_form_submit($form, &$form_state) {
+    $count_max = $form_state['values']['count_goal'];
+    $check_box = $form_state['values']['count_down'];
+    $count_max = intval($count_max);
+    if ($count_max >= 1) {
+        $pingpong_output = page_submit_output($count_max, $check_box);
+        $_SESSION['ping_pong_output'] = $pingpong_output;
+        $form_state['redirect'] = 'ping_pong_success_page';
+    }
+    else { //User didn't enter a number greater than or equal to 1
+        $form_state['redirect'] = 'ping_pong_fail_page';
+    }
+
+} //end ping_pong_form_submit()
+
+
+function ping_pong_fail_submit($form, &$form_state) {
+    $count_max = $form_state['values']['count_goal'];
+    $check_box = $form_state['values']['count_down'];
+    $count_max = intval($count_max);
+    if ($count_max >= 1) {
+        $pingpong_output = page_submit_output($count_max, $check_box);
+        $_SESSION['ping_pong_output'] = $pingpong_output;
+        $form_state['redirect'] = 'ping_pong_success_page';
+    }
+    else { //User didn't enter a number greater than or equal to 1
+        $form_state['redirect'] = 'ping_pong_fail_page';
+    }
+} //end ping_pong_fail_submit()
+
+
+function page_submit_output($count_max, $check_box) {
+    $pingpong_output = array();
+
+    if ($check_box) { //Count Down
+        for ($i = $count_max; $i >= 1; $i--) {
+            if ($i % 3 == 0 && $i % 5 == 0) {
+                array_push($pingpong_output, "ping-pong");
+            }
+            elseif ($i % 3 == 0) {
+                array_push($pingpong_output, "ping");
+            }
+            elseif ($i % 5 == 0) {
+                array_push($pingpong_output, "pong");
+            }
+            else {
+                array_push($pingpong_output, $i);
+            }
+        }
+    }
+    else { //Count Up
+        for ($i = 1; $i <= $count_max; $i++) {
+            if ($i % 3 == 0 && $i % 5 == 0) {
+                array_push($pingpong_output, "ping-pong");
+            }
+            elseif ($i % 3 == 0) {
+                array_push($pingpong_output, "ping");
+            }
+            elseif ($i % 5 == 0) {
+                array_push($pingpong_output, "pong");
+            }
+            else {
+                array_push($pingpong_output, $i);
+            }
+        }
+    }
+    return $pingpong_output;
+} //end page_submit_output()
