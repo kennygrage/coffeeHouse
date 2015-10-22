@@ -1,0 +1,5 @@
+name = Queen Attack
+description = Takes two textfields as input, one where the queen is at, and the other, the potential piece to be attack, and determines if the queen can attack that piece.
+package = My First Modules
+core = 7.x
+files[] = queen_attack.module
