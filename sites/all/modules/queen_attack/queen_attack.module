@@ -1,21 +1,21 @@
 <?php
 
-
 function queen_attack_menu() {
     $items = array();
     $items['queen_attack'] = array(
             'title' => 'Queen Attack',
             'type' => MENU_NORMAL_ITEM,
-            'access callback' => 'drupal_get_form',
+            'access callback' => TRUE,
+            'page callback' => 'drupal_get_form',
             'page arguments' => array('queen_attack_form'),
         );
-    $items['success'] = array(
+    $items['queen_attack_success'] = array(
             'title' => 'Success',
             'type' => MENU_CALLBACK,
             'access callback' => TRUE,
             'page callback' => 'queen_attack_success',
         );
-    $items['fail'] = array(
+    $items['queen_attack_fail'] = array(
             'title' => 'Queen Cannot Attack Piece',
             'type' => MENU_CALLBACK,
             'access callback' => TRUE,
@@ -30,14 +30,14 @@ function queen_attack_form() {
     $form['queen_location'] = array(
             '#title' => 'Queen Location',
             '#type' => 'textfield',
-            '#description' => t('Please enter queen coordinates. Format: (letter)(number), i.e. A6');
+            '#description' => t('Please enter queen coordinates. Format: (letter)(number), i.e. A6'),
             '#required' => TRUE,
             '#element_validate' => array('element_validate_coordinates'),
         );
     $form['piece_location'] = array(
             '#title' => 'Other Piece Location',
             '#type' => 'textfield',
-            '#description' => t('Please enter the coordinates of the other piece. Format: (letter)(number), i.e. A6');
+            '#description' => t('Please enter the coordinates of the other piece. Format: (letter)(number), i.e. A6'),
             '#required' => TRUE,
             '#element_validate' => array('element_validate_coordinates'),
         );
@@ -54,9 +54,8 @@ function queen_attack_form_submit($form, &$form_state) {
     $piece_location = $form_state['values']['piece_location'];
     $able_to_attack = is_able_to_attack($queen_location, $piece_location);
 
-    if ($able_to_attack) {$form_state['redirect'] = 'success';}
-    else {$form_state['redirect'] = 'fail';}
-
+    if ($able_to_attack) {$form_state['redirect'] = 'queen_attack_success';}
+    else {$form_state['redirect'] = 'queen_attack_fail';}
 } //end queen_attack_form_submit()
 
 function queen_attack_success() {
@@ -70,18 +69,30 @@ function queen_attack_fail() {
 
 
 function element_validate_coordinates($element) {
-    $pattern = "/^[a-hA-H][1-8]$/";
+    $pattern = "/^[a-h][1-8]$/i";
     $correct_format = preg_match($pattern, $element['#value']);
-    return $correct_format;
+    if (!$correct_format) {
+        form_error($element, t('Please enter valid format'));
+    }
 } //end element_validate_coordinates()
 
 
 function is_able_to_attack($queen_location, $piece_location) {
-    $queen_location = strtoupper($queen_location);
-    $piece_location = strtoupper($piece_location);
+    $diagonal_positions = [];
+
+    //make sure the first letter is capitalized
+    $make_upper = strtoupper(substr($queen_location, 0, 1));
+    $number = substr($queen_location, -1);
+    $queen_location = $make_upper . $number;
+
+    //make sure the first letter is capitalized
+    $make_upper = strtoupper(substr($piece_location, 0, 1));
+    $number = substr($piece_location, -1);
+    $piece_location = $make_upper . $number;
+
     if ($queen_location == $piece_location) {return false;} //two pieces can't be in the same place
-    $queen_coordinate_array = explode("", $queen_location);
-    $piece_coordinate_array = explode("", $piece_location);
+    $queen_coordinate_array = str_split($queen_location);
+    $piece_coordinate_array = str_split($piece_location);
 
     if ($queen_coordinate_array[0] == $piece_coordinate_array[0]) { //pieces are in the same column
         return true;
@@ -89,29 +100,54 @@ function is_able_to_attack($queen_location, $piece_location) {
     else if($queen_coordinate_array[1] == $piece_coordinate_array[1]) { //pieces are in the same row
         return true;
     }
-    else if(diagonal is true) { //pieces in line diagonally from each other
-        return true;
-    }
     else {
-        $moving_coordinate_array[0] = $queen_coordinate_array[0];
-        $moving_coordinate_array[1] = $queen_coordinate_array[1];
 
         //try to move down left
+        $moving_coordinate_array[0] = $queen_coordinate_array[0];
+        $moving_coordinate_array[1] = $queen_coordinate_array[1];
         while ($moving_coordinate_array[0] != "A" && $moving_coordinate_array[1] != "1") {
             //moving moving_coordinate_array down left one square
-            $moving_coordinate_array[0] = move($moving_coordinate_array[0], "down");
+            $moving_coordinate_array[0] = move($moving_coordinate_array[0], "left");
+            $moving_coordinate_array[1] = move($moving_coordinate_array[1], "down");
+            $moving_coordinate_string = implode("", $moving_coordinate_array);
+            array_push($diagonal_positions, $moving_coordinate_string);
+        }
+
+        //try to move down right
+        $moving_coordinate_array[0] = $queen_coordinate_array[0];
+        $moving_coordinate_array[1] = $queen_coordinate_array[1];
+        while ($moving_coordinate_array[0] != "H" && $moving_coordinate_array[1] != "1") {
+            $moving_coordinate_array[0] = move($moving_coordinate_array[0], "right");
+            $moving_coordinate_array[1] = move($moving_coordinate_array[1], "down");
+            $moving_coordinate_string = implode("", $moving_coordinate_array);
+            array_push($diagonal_positions, $moving_coordinate_string);
         }
 
 
-        //try to move down right
-
-
         //try to move up left
-
+        $moving_coordinate_array[0] = $queen_coordinate_array[0];
+        $moving_coordinate_array[1] = $queen_coordinate_array[1];
+        while ($moving_coordinate_array[0] != "A" && $moving_coordinate_array[1] != "8") {
+            $moving_coordinate_array[0] = move($moving_coordinate_array[0], "left");
+            $moving_coordinate_array[1] = move($moving_coordinate_array[1], "up");
+            $moving_coordinate_string = implode("", $moving_coordinate_array);
+            array_push($diagonal_positions, $moving_coordinate_string);
+        }
 
         //try to move up right
-
-
+        $moving_coordinate_array[0] = $queen_coordinate_array[0];
+        $moving_coordinate_array[1] = $queen_coordinate_array[1];
+        while ($moving_coordinate_array[0] != "H" && $moving_coordinate_array[1] != "8") {
+            $moving_coordinate_array[0] = move($moving_coordinate_array[0], "right");
+            $moving_coordinate_array[1] = move($moving_coordinate_array[1], "up");
+            $moving_coordinate_string = implode("", $moving_coordinate_array);
+            array_push($diagonal_positions, $moving_coordinate_string);
+        }
+        foreach ($diagonal_positions as $position) {
+            if ($piece_location == $position) { //one of the diagonal positions match the piece location
+                return true;
+            }
+        }
 
         return false;
     }
@@ -119,164 +155,12 @@ function is_able_to_attack($queen_location, $piece_location) {
 
 
 function move($coordinate, $direction) {
-    if ($coordinate == "A") {
-        if ($direction == "down") {
+    $ascii_coord = ord($coordinate);
 
-        }
-        else if ($direction == "up") {
+    if ($direction == "down" || $direction == "left") {$ascii_coord--;}
+    else if ($direction == "up" || $direction == "right") {$ascii_coord++;}
+    else {return false;} //this should not return
 
-        }
-        else {
-            return false; //this should not return
-        }
-    }
-    else if ($coordinate == "B") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if ($coordinate == "C") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if ($coordinate == "D") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if ($coordinate == "E") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if ($coordinate == "F") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if ($coordinate == "G") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if ($coordinate == "H") {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else if (preg_match("/^[1-8]$/", $coordinate)) {
-        if ($direction == "down") {
-
-        }
-        else if ($direction == "up") {
-
-        }
-        else {
-            return false; //this should not return
-        }
-
-    }
-    else {
-        return false; //this should not return
-    }
-
-
-
-
-    if ($direction == "down") {
-        if (preg_match("/^[A-H]$/", $coordinate)) {
-            if ($coordinate == "A") {
-
-            }
-        }
-        else if (preg_match("/^[1-8]$/", $coordinate)) {
-
-        }
-        else {
-            return false; //there is an error somewhere
-        }
-    }
-    else if ($direction == "up") {
-        if (preg_match("/^[A-H]$/", $coordinate)) {
-
-        }
-        else if (preg_match("/^[1-8]$/", $coordinate)) {
-
-        }
-        else {
-            return false; //there is an error somewhere
-        }
-    }
-    else {
-        return false; //there is an error somewhere
-    }
+    $coordinate = chr($ascii_coord);
+    return $coordinate;
 }
-
-#######################################
-
-
-
-
-function elez($element) { //elez() should be element_validate_range(). I changed the name to be certain this isn't a specific drupal function
-    # $element is the field in the form that is being validated
-    if ($element['#value'] > 50 || $element['#value'] < -50) {
-        form_error($element, t('Number must be less than 50 and greater than -50'));
-    }
-} //end elez()
-
-
-function element_validate_even($element) {
-    if ($element['#value'] % 2 != 0) {
-        form_error($element, t('Number must be even because I want to practive writing validations'));
-    }
-} //end element_validate_even()
