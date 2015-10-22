@@ -31,6 +31,13 @@ function ping_pong_form() {
             '#title' => 'Count Goal',
             '#type' => 'textfield',
             '#description' => t('Please enter the number you want to count up to.'),
+            '#required' => TRUE,
+            '#element_validate' => array('element_validate_integer_positive'),
+    #element_validate_integer:          Validate integer elements
+    #element_validate_integer_positive: Validate integer elements that must be positive
+    #element_validate_number:           Validate numerical elements
+    #date_validate:                     Validates the date input field type to prevent invalid dates (i.e. February 30, 2006)
+    #password_confirm_validate:         Validates a password_confirm element
         );
     $form['count_down'] = array(
             '#title' => 'Count Down (Check if you want to count down instead of count up)',

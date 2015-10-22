@@ -24,12 +24,16 @@ function sum_form() {
             '#title' => 'Left Number',
             '#type' => 'textfield',
             '#description' => t('Please enter your starting number.'),
+            '#required' => TRUE,
+            '#element_validate' => array('element_validate_number', 'elez', 'element_validate_even'), //elez is a function
         );
 
     $form['right_number'] = array(
             '#title' => 'Right Number',
             '#type' => 'textfield',
             '#description' => t('Please enter a number to add to the starting number.'),
+            '#required' => TRUE,
+            '#element_validate' => array('element_validate_number', 'elez', 'element_validate_even'), //elez is a function
         );
 
     $form['submit'] = array(
@@ -55,4 +59,19 @@ function sum_form_submit($form, &$form_state) {
 function sum_success() {
     $answer = $_SESSION['sum_output'];
     return "Your sum is $answer";
-}
+} //end sum_success()
+
+
+function elez($element) { //elez() should be element_validate_range(). I changed the name to be certain this isn't a specific drupal function
+    # $element is the field in the form that is being validated
+    if ($element['#value'] > 50 || $element['#value'] < -50) {
+        form_error($element, t('Number must be less than 50 and greater than -50'));
+    }
+} //end elez()
+
+
+function element_validate_even($element) {
+    if ($element['#value'] % 2 != 0) {
+        form_error($element, t('Number must be even because I want to practive writing validations'));
+    }
+} //end element_validate_even()
