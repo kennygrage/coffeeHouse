@@ -29,22 +29,21 @@ class GreetingTests extends DrupalWebTestCase {
     /**
      * Tests
      */
-    public function testGreetingNavigation() {
+    public function testGreetingHelloFriend() {
         $this->drupalGet('hello_friend'); //navigate to the url created by the greeting module
         $this->assertText('Hello my dear friend', 'The text on the page is correct.');
-    } //end testGreetingNavigation()
-    
+    } //end testGreetingHelloFriend()
+
+    public function testGreetingGoodbyeFriend() {
+        $this->drupalGet('goodbye_friend'); //navigate to the url created by the greeting module
+        $this->assertText('Goodbye my dear friend!', 'The text on the page is correct.');
+    } //end testGreetingGoodbyeFriend()
+
+    public function testGreetingGreetingNewUser() {
+        $this->drupalGet('greeting_new_user'); //navigate to the url created by the greeting module
+        $this->assertText('Goodbye my dear friend!', 'The text on the page is correct.');
+    } //end testGreetingGreetingNewUser()
+
 
 
 } //end GreetingTests
-
-
-
-
-
-    public function testHelloWorld() {
-        $this->drupalGet('helloworld'); //Navigate to /helloworld
-        $this->assertText('Hello World. Welcome to Drupal.', 'The page content is present.'); //Verify that the text "Hello World ...", exists on the page
-    } //end testHelloWorld()
-
-} //end HelloworldTests
