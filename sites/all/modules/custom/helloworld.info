@@ -1,0 +1,3 @@
+name = Hello World Test
+description = An example module to use SimpleTest
+core = 7.x
