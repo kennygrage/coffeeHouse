@@ -1,0 +1,5 @@
+name = Shift Cipher
+description = Encrypts a word or phrase given by the user using the shift cipher and the shift key also given by the user.
+package = My First Modules
+core = 7.x
+files[] = shift_cipher.module

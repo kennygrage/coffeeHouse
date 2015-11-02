@@ -1,0 +1,180 @@
+<?php
+
+
+############### MENU ###############
+function shift_cipher_menu() {
+    $items = array();
+    $items['shift_cipher'] = array(
+            'title' => 'Shift Cipher',
+            'type' => MENU_NORMAL_ITEM,
+            'access callback' => TRUE,
+            'page callback' => 'drupal_get_form',
+            'page arguments' => array('shift_cipher_form'),
+        );
+    $items['shift_cipher_success'] = array(
+            'title' => 'Success',
+            'type' => MENU_CALLBACK,
+            'access callback' => TRUE,
+            'page callback' => 'shift_cipher_success',
+        );
+    return $items;
+} //end shift_cipher_menu()
+
+
+############### FORM FUNCTIONS ###############
+function shift_cipher_form() {
+    $form = array();
+    $form['phrase'] = array(
+            '#title' => 'Phrase',
+            '#type' => 'textfield',
+            '#description' => t('Please enter a word or phrase to be encrypted.'),
+            '#required' => TRUE,
+            '#element_validate' => array('element_validate_no_special_characters'),
+        );
+    $form['shift_value'] = array(
+            '#title' => 'Shift Value',
+            '#type' => 'textfield',
+            '#description' => t('Please enter a positive integer between 1 and 26.'),
+            '#required' => TRUE,
+            '#element_validate' => array('element_validate_integer_positive', 'element_validate_between_1_and_26'),
+        );
+    $form['shift_direction'] = array(
+            '#title' => 'Shift Direction',
+            '#type' => 'textfield',
+            '#description' => t('Please enter either "left" or "right" to indicate which way to shift.'),
+            '#required' => TRUE,
+            '#element_validate' => array('element_validate_left_or_right'),
+        );
+    $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' => 'Encrypt',
+        );
+    return $form;
+} //end shift_cipher_form()
+
+
+function shift_cipher_form_submit($form, &$form_state) {
+    $phrase = $form_state['values']['phrase'];
+    $shift_value = $form_state['values']['shift_value'];
+    $shift_direction = $form_state['values']['shift_direction'];
+    $_SESSION['encrypted_phrase'] = encrypt_phrase($phrase, $shift_value, $shift_direction);
+
+    $form_state['redirect'] = 'shift_cipher_success';
+} //end queen_attack_form_submit()
+
+
+############### INPUT VALIDATION FUNCTIONS ###############
+function element_validate_no_special_characters($element) {
+    $phrase_array = str_split($element['#value']);
+    #No spcial characters except for punctuation.
+    #Punctuation characters: http://www.thepunctuationguide.com/
+    foreach ($phrase_array as $letter) {
+        $ascii_of_letter = ord($letter);
+        if ($ascii_of_letter < 32 || $ascii_of_letter > 126) {
+            form_error($element, t('Only letters, numbers, and punctuation are allowed in the phrase to be encrypted.'));        
+        }
+    }
+} //end element_validate_no_special_characters()
+
+
+function element_validate_between_1_and_26($element) {
+    $pattern = "/^\d{1,2}$/";
+    $correct_format = preg_match($pattern, $element['#value']); //make sure we are dealing with a 1 or 2 digit integer
+    if ($correct_format) { //if we are dealing with a 1 or 2 digit integer, make sure it is between 1 and 26
+        if ($element['#value'] > 26 || $element['#value'] < 1) {
+            $correct_format = 0;
+        }
+    }
+    if (!$correct_format) {
+        form_error($element, t('Please enter an integer between 1 and 26.'));
+    }
+} //end element_validate_between_1_and_26()
+
+
+function element_validate_left_or_right($element) {
+    $pattern = "/^[A-Za-z]{4,5}$/";
+    $correct_format = preg_match($pattern, $element['#value']); //make sure we are dealing with a 4 to 5 letter word
+    if ($correct_format) { //if we are dealing with a 4 to 5 letter word, make sure it is either "left" or "right"
+        $element['#value'] = strtolower($element['#value']);
+        if ($element['#value'] != "left" && $element['#value'] != "right") {
+            $correct_format = 0;
+        }
+    }
+    if (!$correct_format) {
+        form_error($element, t('Please enter either "left" or "right".'));
+    }
+} //end element_validate_left_or_right()
+
+
+############### VARIABLE MANIPULATION FUNCTIONS ###############
+function encrypt_phrase($phrase, $shift_value, $shift_direction) {
+    if ($shift_direction == "left") {
+        $direction = -1;
+    }
+    else {
+        $direction = 1;
+    }
+    $shift_value *= $direction;
+    $phrase_array = str_split($phrase);
+
+    foreach ($phrase_array as &$letter) {
+        $ascii_of_letter = ord($letter);
+
+        //character is a number
+        if ($ascii_of_letter >= 48 && $ascii_of_letter <= 57) {
+            $ascii_of_letter += $shift_value;
+            if ($ascii_of_letter < 48) {
+                while ($ascii_of_letter < 48) {
+                    $ascii_of_letter += 10;
+                }
+            }
+            else if ($ascii_of_letter > 57) {
+                while ($ascii_of_letter > 57) {
+                    $ascii_of_letter -= 10;
+                }
+            }
+        }
+
+        //character is a capital letter
+        else if ($ascii_of_letter >= 65 && $ascii_of_letter <= 90) {
+            $ascii_of_letter += $shift_value;
+            if ($ascii_of_letter < 65) {
+                while ($ascii_of_letter < 65) {
+                    $ascii_of_letter += 26;
+                }
+            }
+            else if ($ascii_of_letter > 90) {
+                while ($ascii_of_letter > 90) {
+                    $ascii_of_letter -= 26;
+                }
+            }
+        }
+
+        //character is a lowercase letter
+        else if ($ascii_of_letter >= 97 && $ascii_of_letter <= 122) {
+            $ascii_of_letter += $shift_value;
+            if ($ascii_of_letter < 97) {
+                while ($ascii_of_letter < 97) {
+                    $ascii_of_letter += 26;
+                }
+            }
+            else if ($ascii_of_letter > 122) {
+                while ($ascii_of_letter > 122) {
+                    $ascii_of_letter -= 26;
+                }
+            }
+        }
+
+        $letter = chr($ascii_of_letter);
+    }
+    $phrase = implode("", $phrase_array);
+
+    return $phrase;
+}
+
+
+############### PAGE REDIRECTED FUNCTIONS ###############
+function shift_cipher_success() {
+    $encrypted_phrase = $_SESSION['encrypted_phrase'];
+    return "Your Encrypted Phrase: $encrypted_phrase";
+}
