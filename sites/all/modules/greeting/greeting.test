@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Functional tests for the simple Greeting module
+ */
+
+class GreetingTests extends DrupalWebTestCase {
+    /**
+     * Metadata about Greeting test case
+     */
+    public static function getInfo() {
+        return array(
+            'name' => 'Greeting Tests',
+            'description' => 'Tests for the Greeting module',
+            'group' => 'Kenny\'s Tests',
+        );
+    } //end getInfo()
+
+
+    /**
+     * Perform any setup tasks for the test cases
+     */
+    public function setUp() {
+        parent::setUp(array('greeting')); //machine readable name of the module
+    } //end setUp()
+
+
+    /**
+     * Tests
+     */
+    public function testGreetingNavigation() {
+        $this->drupalGet('hello_friend'); //navigate to the url created by the greeting module
+        $this->assertText('Hello my dear friend', 'The text on the page is correct.');
+    } //end testGreetingNavigation()
+    
+
+
+} //end GreetingTests
+
+
+
+
+
+    public function testHelloWorld() {
+        $this->drupalGet('helloworld'); //Navigate to /helloworld
+        $this->assertText('Hello World. Welcome to Drupal.', 'The page content is present.'); //Verify that the text "Hello World ...", exists on the page
+    } //end testHelloWorld()
+
+} //end HelloworldTests
