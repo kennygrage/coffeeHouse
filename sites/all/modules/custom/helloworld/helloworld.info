@@ -1,3 +1,5 @@
 name = Hello World Test
 description = An example module to use SimpleTest
 core = 7.x
+files[] = helloworld.module
+files[] = tests/helloworld.test

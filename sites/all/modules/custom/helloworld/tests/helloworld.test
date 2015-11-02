@@ -1,0 +1,34 @@
+<?php
+/**
+ * @file
+ * Tests for the hello world module
+ */
+
+class HelloworldTests extends DrupalWebTestCase {
+
+    /**
+     * Metadata about our test case
+     */
+    public static function getInfo() {
+        return array(
+            'name' => "zzz TEST: Hello World", //The human readable name of the test case
+            'description' => 'Tests for the Hello World module', //A short description of the tests this case performs
+            'group' => 'Hello World Group', //The group that this case belongs too, used for grouping tests together in the UI
+        );
+    } //end getInfo()
+
+
+    /**
+     * Perform any setup tasks for our test case
+     */
+    public function setUp() {
+        parent::setUp(array('helloworld'));
+    } //end setUp()
+
+
+    public function testHelloWorld() {
+        $this->drupalGet('helloworld'); //Navigate to /helloworld
+        $this->assertText('Hello World. Welcome to Drupal.', 'The page content is present.'); //Verify that the text "Hello World ...", exists on the page
+    } //end testHelloWorld()
+    
+} //end HelloworldTests

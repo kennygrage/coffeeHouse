@@ -1,4 +1,4 @@
-<? php
+<?php
 /**
  * @file
  * Hello World Test demonstrates the use of SimpleTest
@@ -12,7 +12,7 @@ function helloworld_menu() {
     $items = array();
 
     $items['helloworld'] = array(
-        'title' => 'Hello World',
+        'title' => 'zzz TEST: Hello World',
         'access callback' => TRUE,
         'page callback' => 'helloworld_hello_page',
         'type' => MENU_NORMAL_ITEM,
