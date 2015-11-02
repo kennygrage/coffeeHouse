@@ -41,7 +41,7 @@ class GreetingTests extends DrupalWebTestCase {
 
     public function testGreetingGreetingNewUser() {
         $this->drupalGet('greeting_new_user'); //navigate to the url created by the greeting module
-        $this->assertText('Goodbye my dear friend!', 'The text on the page is correct.');
+        $this->assertText('User account is created', 'The text on the page is correct.');
     } //end testGreetingGreetingNewUser()
 
 
