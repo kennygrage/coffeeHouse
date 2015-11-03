@@ -1,0 +1,33 @@
+<?php
+
+function title_case_menu() {
+    $items = array();
+    $items['title_case'] = array(
+        'title' => "Title Case",
+        'page_callback' => "drupal_get_form",
+        'access_callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+        'page arguments' => array('title_case_form'),
+    );
+
+    return $items;
+
+} //end title_case_menu()
+
+
+function title_case_form() {
+    $form = array();
+
+    $form['sentence'] = array(
+        '#title' => 'Sentence',
+        '#type' => 'textfield',
+        '#description' => t('Please enter your sentence to be changed to title case.'),
+        '#required' => TRUE,
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Go',
+    );
+
+    return $form;
+} //end title_case_page()

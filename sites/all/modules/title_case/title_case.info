@@ -1,0 +1,6 @@
+name = Title Case
+description = Takes a sentence from the user and changes it to title case.
+package = My First Modules
+core = 7.x
+files[] = title_case.module
+dependencies[] = simpletest
