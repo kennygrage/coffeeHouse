@@ -13,15 +13,16 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
     function testTitleCase() {
 
         //displays desired result during test
-        $description = 'The string "hi" should return "Hi".';
+        $description = 'A title with a single letter is capitalized.';
 
         //Arrange
-        $input = 'hi';
+        $input = 'a';
 
         //Act
         $result = convert_to_title_case($input);
 
         //Assert
-        $this->assertTrue($result, $description);
+        $expected_output = 'A';
+        $this->assertTrue($result, $expected_output, $description);
     }
 } //end class: TitleCaseTestCase
