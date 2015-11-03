@@ -36,7 +36,11 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
 
 
         //**********TEST 3**********//
-
+        $description = 'A title with multiple words should be capitalized.';
+        $input = 'mad max';
+        $result = convert_to_title_case($input);
+        $expected_output = 'Mad Max';
+        $this->assertEqual($result, $expected_output, $description);
 
 
         //**********TEST 4**********//
