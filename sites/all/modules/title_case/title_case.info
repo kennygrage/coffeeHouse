@@ -3,4 +3,5 @@ description = Takes a sentence from the user and changes it to title case.
 package = My First Modules
 core = 7.x
 files[] = title_case.module
+files[] = title_case.test
 dependencies[] = simpletest

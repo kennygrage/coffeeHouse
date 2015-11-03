@@ -49,19 +49,24 @@ function title_case_form_submit($form, &$form_state) {
 function convert_to_title_case($sentence) {
     $words_not_to_capitalize_array = ["a", "an", "the", "and", "or", "for", "nor", "on", "at", "to", "from", "by", "but", "yet", "so", "as", "from", "in", "into", "than", "through", "throughout", "up", "vs", "vs.", "when", "with", "within", "without"];
     $sentence_array = explode(" ", $sentence);
+    $array_length = $sentence_array.length;
+    $counter = 1; //First and last word are always capitalized. We are going to test if it is the first word using $counter or the last word using $counter and $array_length
 
     foreach ($sentence_array as &$word) {
         $word = strtolower($word);
         $found = 0;
-        foreach ($words_not_to_capitalize_array as $non_word) {
-            if ($word == $non_word) {
-                $found = 1;
-                break 1;
+        if (($counter != 1) && ($counter != $array_length)) {
+            foreach ($words_not_to_capitalize_array as $non_word) {
+                if ($word == $non_word) {
+                    $found = 1;
+                    break 1;
+                }
             }
         }
-        if ($found == 0) {
+        if ($found == 0) { //$found will equal 0 if we did not find a non word, if it is the first word, or if it is the last word
             $word = ucfirst($word);
         }
+        $counter++; //we are moving on to the next word
     }
 
     $sentence = implode(" ", $sentence_array);
