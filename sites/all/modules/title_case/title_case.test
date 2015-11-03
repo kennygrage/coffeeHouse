@@ -60,6 +60,10 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
 
 
         //**********TEST 6**********//
-
-    }
+        $description = 'A title with multiple words, some of which are small, should be put in to title case.';
+        $input = 'the lord of the rings';
+        $result = convert_to_title_case($input);
+        $expected_output = 'The Lord of the Rings';
+        $this->assertEqual($result, $expected_output, $description);
+    } //end TestTitleCase()
 } //end class: TitleCaseTestCase
