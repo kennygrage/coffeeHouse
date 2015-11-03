@@ -44,7 +44,11 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
 
 
         //**********TEST 4**********//
-
+        $description = 'Small words should not be capitalized.';
+        $input = 'once upon a time';
+        $result = convert_to_title_case($input);
+        $expected_output = 'Once Upon a Time';
+        $this->assertEqual($result, $expected_output, $description);
 
 
         //**********TEST 5**********//
