@@ -52,7 +52,11 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
 
 
         //**********TEST 5**********//
-
+        $description = 'Titles which start with a small word should still have that first word be capitalized.';
+        $input = 'a clockwork orange';
+        $result = convert_to_title_case($input);
+        $expected_output = 'A Clockwork Orange';
+        $this->assertEqual($result, $expected_output, $description);
 
 
         //**********TEST 6**********//
