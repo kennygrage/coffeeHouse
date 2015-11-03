@@ -6,12 +6,13 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
         return array(
             'name' => 'Title Case unit tests',
             'description' => 'Test if convert_to_title_case() works properly.',
-            'group' => 'Kenny\'s Tests',
+            'group' => 'AAAA Kenny\'s Tests',
         );
     } //end getInfo()
 
     function testTitleCase() {
 
+        //**********TEST 1**********//
         //displays desired result during test
         $description = 'A title with a single letter is capitalized.';
 
@@ -23,6 +24,30 @@ class TitleCaseTestCase extends DrupalUnitTestCase {
 
         //Assert
         $expected_output = 'A';
-        $this->assertTrue($result, $expected_output, $description);
+        $this->assertEqual($result, $expected_output, $description);
+
+
+        //**********TEST 2**********//
+        $description = 'A title with one word instead of one letter should be capitalized.';
+        $input = 'thor';
+        $result = convert_to_title_case($input);
+        $expected_output = 'Thor';
+        $this->assertEqual($result, $expected_output, $description);
+
+
+        //**********TEST 3**********//
+
+
+
+        //**********TEST 4**********//
+
+
+
+        //**********TEST 5**********//
+
+
+
+        //**********TEST 6**********//
+
     }
 } //end class: TitleCaseTestCase
