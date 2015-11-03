@@ -1,0 +1,7 @@
+name = Prime Finder
+description = Takes a positive integer from the user and finds all prime numbers below that number.
+package = My First Modules
+core = 7.x
+files[] = prime_finder.module
+files[] = prime_finder.test
+dependencies[] = simpletest
