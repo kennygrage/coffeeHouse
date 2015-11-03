@@ -4,10 +4,17 @@ function title_case_menu() {
     $items = array();
     $items['title_case'] = array(
         'title' => "Title Case",
-        'page_callback' => "drupal_get_form",
-        'access_callback' => TRUE,
+        'page callback' => "drupal_get_form",
+        'access callback' => TRUE,
         'type' => MENU_NORMAL_ITEM,
         'page arguments' => array('title_case_form'),
+    );
+
+    $items['title_case_final'] = array(
+        'title' => 'Title Case',
+        'type' => MENU_CALLBACK,
+        'access callback' => TRUE,
+        'page callback' => 'title_case_final_page',
     );
 
     return $items;
@@ -35,15 +42,35 @@ function title_case_form() {
 
 function title_case_form_submit($form, &$form_state) {
     $_SESSION['sentence'] = convert_to_title_case($form_state['values']['sentence']);
-    $form_state['redirect'] = 'title_case_final_page';
+    $form_state['redirect'] = 'title_case_final';
 } //end title_case_form_submit()
 
 
 function convert_to_title_case($sentence) {
+    $words_not_to_capitalize_array = ["a", "an", "the", "and", "or", "for", "nor", "on", "at", "to", "from", "by", "but", "yet", "so", "as", "from", "in", "into", "than", "through", "throughout", "up", "vs", "vs.", "when", "with", "within", "without"];
+    $sentence_array = explode(" ", $sentence);
+
+    foreach ($sentence_array as &$word) {
+        $word = strtolower($word);
+        $found = 0;
+        foreach ($words_not_to_capitalize_array as $non_word) {
+            if ($word == $non_word) {
+                $found = 1;
+                break 1;
+            }
+        }
+        if ($found == 0) {
+            $word = ucfirst($word);
+        }
+    }
+
+    $sentence = implode(" ", $sentence_array);
+
     return $sentence;
 } //end convert_to_title_case()
 
 
 function title_case_final_page() {
-    return $_SESSION['sentence'];
+    $sentence = $_SESSION['sentence'];
+    return "<p>Your sentence in title case:</p><p align=\"center\">$sentence</p>";
 } //end title_case_final_page()
