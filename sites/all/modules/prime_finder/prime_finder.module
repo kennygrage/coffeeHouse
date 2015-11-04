@@ -11,7 +11,7 @@ function prime_finder_menu() {
     );
 
     $items['prime_finder_final'] = array(
-        'title' => 'Title Case',
+        'title' => 'Prime Finder',
         'type' => MENU_CALLBACK,
         'access callback' => TRUE,
         'page callback' => 'prime_finder_final_page',
@@ -43,6 +43,7 @@ function prime_finder_form() {
 
 function prime_finder_form_submit($form, &$form_state) {
     $_SESSION['user_input'] = $form_state['values']['user_integer'];
+    $_SESSION['array_of_primes'] = [];
     $_SESSION['array_of_primes'] = find_prime_numbers($form_state['values']['user_integer']);
     $form_state['redirect'] = 'prime_finder_final';
 } //end sum_form_submit()
@@ -51,8 +52,15 @@ function prime_finder_form_submit($form, &$form_state) {
 function prime_finder_final_page() {
     $array_of_primes = $_SESSION['array_of_primes'];
     $user_input = $_SESSION['user_input'];
-    $primes = implode(", ", $array_of_primes);
-    return "<p>Your list of prime numbers less than or equal to $primes:</p><p align=\"center\">$primes</p>"
+    if (count($array_of_primes) > 1) {
+        $primes = implode(", ", $array_of_primes);
+    }
+    else {
+        array_push($array_of_primes, "hi");
+        $primes = implode(", ", $array_of_primes);
+        // $primes = $array_of_primes[0];
+    }
+    return "<p>Your list of prime numbers less than or equal to $user_input:</p><p align=\"center\">$primes</p>";
 } //end prime_finder_final_page()
 
 
@@ -62,22 +70,21 @@ function find_prime_numbers($user_input) {
         array_push($list_of_numbers, $i);
     }
 
-    for($j=0; $j <= count($list_of_numbers); $j++) {
+    for($j=0; $j < count($list_of_numbers); $j++) {
         if ($list_of_numbers[$j] == "") {
             break 1;
         }
         $increment = $list_of_numbers[$j];
-        for($k=$j; $k<=count($list_of_numbers); $k+=$increment) {
+        for($k=$j+$increment; $k<=count($list_of_numbers); $k+=$increment) {
             $list_of_numbers[$k] = "";
         }
     }
     $list_of_prime_numbers = [];
-    for ($l=0; $l<=count($list_of_numbers); $l++) {
-        if ($list_of_numbers[$l] != "") {
+    for ($l=0; $l<count($list_of_numbers); $l++) {
+        if ($list_of_numbers[$l]) {
             array_push($list_of_prime_numbers, $list_of_numbers[$l]);
         }
     }
 
     return $list_of_prime_numbers;
-
 } //end find_prime_numbers()

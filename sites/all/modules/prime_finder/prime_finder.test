@@ -1,0 +1,48 @@
+<?php
+
+class PrimeFinderTestCase extends DrupalUnitTestCase {
+
+    public static function getInfo() {
+        return array(
+            'name' => 'Prime Finder unit tests',
+            'description' => 'Test if find_prime_numbers() works properly.',
+            'group' => 'AAAA Kenny\'s Tests',
+        );
+    } //end getInfo()
+
+    function testTitleCase() {
+
+        //**********TEST 1**********//
+        //displays desired result during test
+        $description = '2 should return 2';
+
+        //Arrange
+        $input = 2;
+
+        //Act
+        $result = find_prime_numbers($input);
+
+        //Assert
+        $expected_output = [2];
+        $this->assertEqual($result, $expected_output, $description);
+
+
+        //**********TEST 2**********//
+        $description = '3 should return 2, 3.';
+        $input = 3;
+        $result = find_prime_numbers($input);
+        $expected_output = [2, 3];
+        drupal_set_message($result);
+        drupal_set_message($expected_output);
+        $this->assertEqual($result, $expected_output, $description);
+
+
+        //**********TEST 3**********//
+        $description = '19 should return prime numbers thru 19';
+        $input = 19;
+        $result = find_prime_numbers($input);
+        $expected_output = [2, 3, 5, 7, 11, 13, 17, 19];
+        $this->assertEqual($result, $expected_output, $description);
+
+    } //end TestTitleCase()
+} //end class: TitleCaseTestCase
