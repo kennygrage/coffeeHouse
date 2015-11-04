@@ -1,0 +1,35 @@
+<?php
+
+function ajax_module_menu() {
+    $items = array();
+    $items['path-to-ajax/%/%'] = array(
+        'access arguments' => array('access content'),
+        'page callback' => 'ajax_module_ajax_callback',
+        'page argements' => array(1,2),
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+} //end ajax_module_menu()
+
+
+function ajax_module_callback($js, $node_id) {
+    $node = node_load($node_id);
+
+    if ($js == 'nojs') { //JavaScript isn't enabled if true
+        drupal_goto('node/' . $node->nid);
+    }
+
+    //Get the render array for the node, and render it into actual HTML
+    $build = node_view($node);
+    $html = render($build);
+
+    //Prepare ajax command to insert the node's HTML into our div under News - the wrapper
+    $commands = array();
+    $commands[] = ajax_command_html('#ajax_module-ajax-wrapper', $html);
+
+    //Render the commands into JSON data format and execute them by printing them to the browser
+    print ajax_render($commands);
+    exit; //Exit so Drupal doesn't have a chance to build a whole page
+
+} //end ajax_module_callback()
