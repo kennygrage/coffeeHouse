@@ -1,11 +1,17 @@
 <?php
 
 function ajax_module_menu() {
-    $items = array();
     $items['path-to-ajax/%/%'] = array(
         'access arguments' => array('access content'),
         'page callback' => 'ajax_module_ajax_callback',
-        'page argements' => array(1,2),
+        'page arguments' => array(1,2),
+        'type' => MENU_CALLBACK,
+    );
+
+    $items['something/nojs/any/arguments/you/need'] = array(
+        'access arguments' => array('access content'),
+        'page callback' => 'my_function',
+        'page arguments' => array(1),
         'type' => MENU_CALLBACK,
     );
 
@@ -13,7 +19,7 @@ function ajax_module_menu() {
 } //end ajax_module_menu()
 
 
-function ajax_module_callback($js, $node_id) {
+function ajax_module_ajax_callback($js, $node_id) {
     $node = node_load($node_id);
 
     if ($js == 'nojs') { //JavaScript isn't enabled if true

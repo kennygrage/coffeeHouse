@@ -5,7 +5,7 @@ function clock_angle_menu() {
     $items['clock_angle'] = array(
             'title' => 'Clock Angle Calculator',
             'page callback' => 'drupal_get_form',
-            'page arguments' => array(clock_angle_form),
+            'page arguments' => array('clock_angle_form'),
             'access callback' => TRUE,
             'type' => MENU_NORMAL_ITEM,
         );
