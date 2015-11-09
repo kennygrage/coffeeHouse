@@ -1,0 +1,5 @@
+name = My Ajax View Loader
+description = Display View with Ajax.
+package = My First Modules
+core = 7.x
+files[] = ajax_view.module
