@@ -1,6 +1,6 @@
-# Dynasty Dish
+# Coffee House Website
 
-##### Dynasty Dish 11/09/2015
+##### Coffee House 11/09/2015
 
 #### Kenny Grage
 
